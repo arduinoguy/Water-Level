@@ -1,6 +1,6 @@
 ﻿
-#define F_CPU 16000000UL
-
+#define F_CPU 1000000UL
+#define RATE  9000
 #define RX_PIN  12
 #define STR_LEN  8
 #define MOTOR   11
@@ -19,10 +19,10 @@ void loop();
 void setup() 
 {
 	pinMode(MOTOR,1);
-	Serial.begin(9600);
+	Serial.begin(4800);
 	Serial.println("Hi");
 	vw_set_rx_pin(12);
-	vw_setup(2000);
+	vw_setup(RATE);
 	vw_rx_start();
  
 }
@@ -39,7 +39,8 @@ void loop() {
 	   if(strcmp((char*)rec,ADDRESS)==0)
 	   {
 		   Serial.println((char*)rec);
-		   vw_wait_rx_max(5000);
+		   //vw_wait_rx_max(5000);
+		   vw_wait_rx();
 		   if(vw_get_message(rec,&msglen))
 		   {
 			   Serial.println((char*)rec);

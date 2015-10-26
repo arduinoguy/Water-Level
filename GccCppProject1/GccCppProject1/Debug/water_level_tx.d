@@ -29,6 +29,7 @@ water_level_tx.d water_level_tx.o: .././water_level_tx.cpp \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\util\delay_basic.h \
  ../include\arduino/Arduino.h ../include\arduino/pins_arduino.h \
+ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sleep.h \
  .././VirtualWire.h
 
 ../include\arduino/Arduino.h:
@@ -100,5 +101,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../include\arduino/Arduino.h:
 
 ../include\arduino/pins_arduino.h:
+
+c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\sleep.h:
 
 .././VirtualWire.h:

@@ -1,5 +1,11 @@
 ﻿
-#define F_CPU 16000000UL
+
+#define F_CPU 1000000UL
+#include <Arduino.h>
+#include <avr/sleep.h>
+
+#define SLEEP 0
+#define RATE 9000
 #define TX_PIN 12
 #define ADDRESS "1234567" 
 #define ON		"0000001"
@@ -10,7 +16,6 @@
 bool start_flag=false;
 bool stop_flag=false;
 
-#include <Arduino.h>
 #include "VirtualWire.h"
 
 void setup();
@@ -24,60 +29,95 @@ void real_stop();
 
 void setup() 
 {
-  pinMode(13,1);
-  DDRD&=~((1<<PORTD2)|(1<<PORTD3));
-  PORTD|=(1<<PORTD2)|(1<<PORTD3);
+  DDRB=0;
+  DDRC=0;
+  DDRD=0;
+  PORTB=~(1<<4);
+  PORTC=0xff;
+  PORTD=0xff;
   
-  pinMode(BOTTOM_SENSOR,INPUT_PULLUP);
-  pinMode(TOP_SENSOR,INPUT_PULLUP);
   
-  attachInterrupt(0,start,RISING);
-  attachInterrupt(1,stop,FALLING);
   
   vw_set_tx_pin(TX_PIN);
-  vw_setup(2000);
+  vw_setup(RATE);
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
+  
   real_stop();
   
-  if(digitalRead(BOTTOM_SENSOR)&&digitalRead(TOP_SENSOR))
-  real_start();
+  if(!digitalRead(BOTTOM_SENSOR)&&digitalRead(TOP_SENSOR))
+  {
+	  start_flag=true;
+  }
+  
+  else attachInterrupt(0,start,LOW);
   
   
-}
+ 
+  }
 
 void loop() 
 {
+   
    if(start_flag)
    real_start();
    
    else if(stop_flag)
    real_stop();
+   
+   #ifdef SLEEP
+   sleep_enable(); 
+   sleep_mode();
+   sleep_disable();
+   #endif
     
 }
 
 
 void start()
-{
-	 digitalWrite(13,!digitalRead(13));
+{    
+	 detachInterrupt(0);
+	 //digitalWrite(13,!digitalRead(13));
 	 
-	 if(digitalRead(TOP_SENSOR))
-	 start_flag=true;
+	 if(!digitalRead(BOTTOM_SENSOR))
+	 {
+        if(digitalRead(TOP_SENSOR))
+		{
+	 	    start_flag=true;
+			 
+		}
+	 }
+	 
+	 else attachInterrupt(0,start,LOW);
 	
 }
 
 void stop()
-{digitalWrite(13,!digitalRead(13));
-//	if(!digitalRead(BOTTOM_SENSOR))
-	stop_flag=true;
+{  
+	detachInterrupt(1);
 	
+	//digitalWrite(13,!digitalRead(13));
+	
+    if(!digitalRead(TOP_SENSOR))
+	{
+		stop_flag=true;
+		
+	}
+	
+	else attachInterrupt(1,stop,LOW);
 }
 
 void real_start()
 {
 	start_flag=false;
+	
+	
 	vw_send((uint8_t*)ADDRESS,strlen(ADDRESS));
 	vw_wait_tx();
 	vw_send((uint8_t*)ON,strlen(ON));
 	vw_wait_tx();
+	attachInterrupt(1,stop,LOW);
+	
+	
 }
 
 void real_stop()
@@ -87,4 +127,11 @@ void real_stop()
 	vw_wait_tx();
 	vw_send((uint8_t*)OFF,strlen(OFF));
 	vw_wait_tx();
+	
+	if(digitalRead(BOTTOM_SENSOR))
+	attachInterrupt(0,start,LOW);
+	
 }
+
+
+
