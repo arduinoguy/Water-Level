@@ -35,12 +35,13 @@ void setup()
   PORTB=~(1<<4);
   PORTC=0xff;
   PORTD=0xff;
-  
+  ACSR|=(1<<ACD);
+  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
   
   
   vw_set_tx_pin(TX_PIN);
   vw_setup(RATE);
-  set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
+
   
   real_stop();
   
@@ -67,7 +68,7 @@ void loop()
    #ifdef SLEEP
    sleep_enable(); 
    sleep_mode();
-   sleep_disable();
+//   sleep_disable();
    #endif
     
 }
