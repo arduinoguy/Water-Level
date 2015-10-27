@@ -29,12 +29,28 @@ void real_stop();
 
 void setup() 
 {
-  DDRB=0;
-  DDRC=0;
-  DDRD=0;
-  PORTB=~(1<<4);
-  PORTC=0xff;
-  PORTD=0xff;
+  DDRB=0xff;
+  DDRC=0xff;
+  DDRD=0xff;
+  DDRD&=~((1<<2)|(1<<3)|(1<<6));
+  PORTB=0;
+  PORTC=0;
+  PORTD=(1<<3);
+
+  /*pinMode(0,OUTPUT);
+  pinMode(1,OUTPUT);
+  pinMode(4,OUTPUT);
+  pinMode(5,OUTPUT);*/
+   //pinMode(6,OUTPUT);
+ // pinMode(7,OUTPUT);
+  //digitalWrite(0,0);
+  //digitalWrite(1,0);
+  
+  //pinMode(2,INPUT);
+  //pinMode(3,INPUT_PULLUP);
+  
+  
+  
   ACSR|=(1<<ACD);
   set_sleep_mode(SLEEP_MODE_PWR_DOWN); 
   
@@ -67,7 +83,7 @@ void loop()
    
    #ifdef SLEEP
    sleep_enable(); 
-   sleep_mode();
+   sleep_cpu();
 //   sleep_disable();
    #endif
     
